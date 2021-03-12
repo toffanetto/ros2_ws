@@ -1,0 +1,6 @@
+Invoking command in '/home/toffanetto/ros2_ws/build/dolly_teleop': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake /home/toffanetto/ros2_ws/src/dolly_teleop -DCMAKE_INSTALL_PREFIX=/home/toffanetto/ros2_ws/install/dolly_teleop
+Invoked command in '/home/toffanetto/ros2_ws/build/dolly_teleop' returned '0': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake /home/toffanetto/ros2_ws/src/dolly_teleop -DCMAKE_INSTALL_PREFIX=/home/toffanetto/ros2_ws/install/dolly_teleop
+Invoking command in '/home/toffanetto/ros2_ws/build/dolly_teleop': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake --build /home/toffanetto/ros2_ws/build/dolly_teleop -- -j12 -l12
+Invoked command in '/home/toffanetto/ros2_ws/build/dolly_teleop' returned '0': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake --build /home/toffanetto/ros2_ws/build/dolly_teleop -- -j12 -l12
+Invoking command in '/home/toffanetto/ros2_ws/build/dolly_teleop': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake --install /home/toffanetto/ros2_ws/build/dolly_teleop
+Invoked command in '/home/toffanetto/ros2_ws/build/dolly_teleop' returned '0': CMAKE_PREFIX_PATH=/opt/ros/foxy /usr/bin/cmake --install /home/toffanetto/ros2_ws/build/dolly_teleop

@@ -1,0 +1,4 @@
+[01m[K/home/toffanetto/ros2_ws/src/dolly_teleop/src/dolly_teleop_node.cpp:[m[K In constructor ‘[01m[KTeleop::Teleop()[m[K’:
+[01m[K/home/toffanetto/ros2_ws/src/dolly_teleop/src/dolly_teleop_node.cpp:31:18:[m[K [01;35m[Kwarning: [m[Kvariable ‘[01m[Kdefault_qos[m[K’ set but not used [[01;35m[K-Wunused-but-set-variable[m[K]
+   31 |             auto [01;35m[Kdefault_qos[m[K = rclcpp::QoS(rclcpp::SystemDefaultsQoS());
+      |                  [01;35m[K^~~~~~~~~~~[m[K
