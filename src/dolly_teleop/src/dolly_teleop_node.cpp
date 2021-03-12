@@ -20,17 +20,21 @@
 
 using namespace std::chrono_literals;
 
-#define VEL_ANG_MAX 0
-#define VEL_LIN_MAX 0
+#define VEL_ANG_MAX 0.02
+#define VEL_LIN_MAX 0.08
 
 
 class Teleop : public rclcpp::Node{
     public: 
 
         Teleop():Node("teleop"){
+            
+            puts("Dolly Teleop Key | Press arrows ou WASD for move and other one key to stop");
+            puts("Play with Dolly!");
+
             auto default_qos = rclcpp::QoS(rclcpp::SystemDefaultsQoS());
 
-            //cmd_pub = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", default_qos); // topic publisher
+            cmd_pub = this->create_publisher<geometry_msgs::msg::Twist>("/dolly/cmd_vel", default_qos); // topic publisher
 
             timer_key_read = this->create_wall_timer(10ms, std::bind(&Teleop::readPubKey,this));
         }
@@ -58,9 +62,8 @@ class Teleop : public rclcpp::Node{
 
         void readPubKey(){
 
+            
             auto cmd_msg = std::make_unique<geometry_msgs::msg::Twist>();
-
-            int c;   
 
             c = getch();
 
@@ -126,17 +129,23 @@ class Teleop : public rclcpp::Node{
                 break;
 
             default:
+                cmd_msg->linear.x = 0;
+                cmd_msg->angular.z =0;
+                RCLCPP_INFO(this->get_logger(), "KEY PRESSED: STOP_KEY");
                 break;
             }
-            //cmd_pub->publish(std::move(cmd_msg));
-            RCLCPP_INFO(this->get_logger(), "KEY PRESSED: '%d'",c);
+            
+            cmd_pub->publish(std::move(cmd_msg));
+            
+            //RCLCPP_INFO(this->get_logger(), "KEY PRESSED: '%d'",c);
         
         }
     
 
         rclcpp::TimerBase::SharedPtr timer_key_read;
         rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_pub;
-
+        
+        int c=0;   
 
 };
 
