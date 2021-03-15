@@ -20,8 +20,13 @@
 
 using namespace std::chrono_literals;
 
-#define VEL_ANG_MAX 0.02
-#define VEL_LIN_MAX 0.08
+#define VEL_ANG_MAX 1
+#define VEL_LIN_MAX 1
+#define VEL_ANG_INC 0.02
+#define VEL_LIN_INC 0.08
+
+double vel_ang = 0;
+double vel_lin = 0;
 
 
 class Teleop : public rclcpp::Node{
@@ -29,7 +34,7 @@ class Teleop : public rclcpp::Node{
 
         Teleop():Node("teleop"){
             
-            puts("Dolly Teleop Key | Press arrows ou WASD for move and other one key to stop");
+            puts("Dolly Teleop Key | Press arrows ou WASD for move and SPACE to stop");
             puts("Play with Dolly!");
 
             auto default_qos = rclcpp::QoS(rclcpp::SystemDefaultsQoS());
@@ -62,7 +67,6 @@ class Teleop : public rclcpp::Node{
 
         void readPubKey(){
 
-            
             auto cmd_msg = std::make_unique<geometry_msgs::msg::Twist>();
 
             c = getch();
@@ -72,72 +76,69 @@ class Teleop : public rclcpp::Node{
             case 65:
                 // UP_KEY
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: UP_KEY");
-                cmd_msg->linear.x = VEL_LIN_MAX;
-                cmd_msg->angular.z = 0;
+                vel_lin = (vel_lin>=VEL_LIN_MAX) ? vel_lin : VEL_LIN_INC+vel_lin;
                 break;
             
             case 66:
                 // DOWN_KEY
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: DOWN_KEY");
-                cmd_msg->linear.x = - VEL_LIN_MAX;
-                cmd_msg->angular.z = 0;
+                vel_lin = (vel_lin<=(-VEL_LIN_MAX)) ? vel_lin : vel_lin-VEL_LIN_INC;
                 break;
             
             case 67:
                 // RIGHT_KEY
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: RIGHT_KEY");
-                cmd_msg->linear.x = 0;
-                cmd_msg->angular.z = VEL_ANG_MAX;
+                vel_ang = (vel_ang<=(-VEL_ANG_MAX)) ? vel_ang : vel_ang-VEL_ANG_INC;
                 break;
             
             case 68:
                 // LEFT_KEY
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: LEFT_KEY");
-                cmd_msg->linear.x = 0;
-                cmd_msg->angular.z = - VEL_ANG_MAX;
+                vel_ang = (vel_ang>=VEL_ANG_MAX) ? vel_ang : VEL_ANG_INC+vel_ang;
                 break;
 
             case 119:
                 // w (UP_KEY) 
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: W");
-                cmd_msg->linear.x = VEL_LIN_MAX;
-                cmd_msg->angular.z = 0;
+                vel_lin = (vel_lin>=VEL_LIN_MAX) ? vel_lin : VEL_LIN_INC+vel_lin;
                 break;
             
             case 115:
                 // s (DOWN_KEY)
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: S");
-                cmd_msg->linear.x = - VEL_LIN_MAX;
-                cmd_msg->angular.z = 0;
+                vel_lin = (vel_lin<=(-VEL_LIN_MAX)) ? vel_lin : vel_lin-VEL_LIN_INC;
                 break;
             
             case 100:
                 // d (RIGHT_KEY)
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: D");
-                cmd_msg->linear.x = 0;
-                cmd_msg->angular.z = VEL_ANG_MAX;
+                vel_ang = (vel_ang<=(-VEL_ANG_MAX)) ? vel_ang : vel_ang-VEL_ANG_INC;
                 break;
             
             case 97:
                 // a (LEFT_KEY)
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: A");
-                cmd_msg->linear.x = 0;
-                cmd_msg->angular.z = - VEL_ANG_MAX;
+                vel_ang = (vel_ang>=VEL_ANG_MAX) ? vel_ang : VEL_ANG_INC+vel_ang;
                 break;
             case -1:
                 exit(0);
                 break;
-
-            default:
-                cmd_msg->linear.x = 0;
-                cmd_msg->angular.z =0;
+            case 32:
+                vel_lin = 0;
+                vel_ang = 0;
                 RCLCPP_INFO(this->get_logger(), "KEY PRESSED: STOP_KEY");
                 break;
-            }
+            default:
+                break;
+        }
+
+            RCLCPP_INFO(this->get_logger(), "KEY PRESSED: '%f %f'",vel_lin, vel_ang);
             
+            cmd_msg->linear.x = vel_lin;
+            cmd_msg->angular.z = vel_ang;
             cmd_pub->publish(std::move(cmd_msg));
             
-            //RCLCPP_INFO(this->get_logger(), "KEY PRESSED: '%d'",c);
+            RCLCPP_INFO(this->get_logger(), "KEY PRESSED: '%d'",c);
         
         }
     
@@ -145,7 +146,7 @@ class Teleop : public rclcpp::Node{
         rclcpp::TimerBase::SharedPtr timer_key_read;
         rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_pub;
         
-        int c=0;   
+        int c=0;
 
 };
 
